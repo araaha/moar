@@ -76,8 +76,6 @@ type Pager struct {
 	QuitIfOneScreen bool
 
 	// Ref: https://github.com/walles/moar/issues/94
-	ScrollLeftHint  twin.Cell
-	ScrollRightHint twin.Cell
 
 	SideScrollAmount int // Should be positive
 
@@ -180,8 +178,6 @@ func NewPager(r *Reader) *Pager {
 		ShowStatusBar:    true,
 		DeInit:           true,
 		SideScrollAmount: 16,
-		ScrollLeftHint:   twin.NewCell('<', twin.StyleDefault.WithAttr(twin.AttrReverse)),
-		ScrollRightHint:  twin.NewCell('>', twin.StyleDefault.WithAttr(twin.AttrReverse)),
 		scrollPosition:   newScrollPosition(name),
 	}
 
@@ -330,28 +326,6 @@ func (p *Pager) StartPaging(screen twin.Screen, chromaStyle *chroma.Style, chrom
 			// read will appear on screen without delay.
 			time.Sleep(200 * time.Millisecond)
 		}
-	}()
-
-	go func() {
-		// Spin the spinner as long as contents is still loading
-		spinnerFrames := [...]string{"/.\\", "-o-", "\\O/", "| |"}
-		spinnerIndex := 0
-		for {
-			if p.reader.done.Load() {
-				break
-			}
-
-			screen.Events() <- eventSpinnerUpdate{spinnerFrames[spinnerIndex]}
-			spinnerIndex++
-			if spinnerIndex >= len(spinnerFrames) {
-				spinnerIndex = 0
-			}
-
-			time.Sleep(200 * time.Millisecond)
-		}
-
-		// Empty our spinner, loading done!
-		screen.Events() <- eventSpinnerUpdate{""}
 	}()
 
 	go func() {

@@ -52,7 +52,7 @@ func (p *Pager) redraw(spinner string) overflowState {
 	eofSpinner := spinner
 	if eofSpinner == "" {
 		// This happens when we're done
-		eofSpinner = "---"
+		eofSpinner = ""
 	}
 	spinnerLine := textstyles.CellsFromString("", _EofMarkerFormat+eofSpinner, nil).Cells
 	for column, cell := range spinnerLine {
@@ -275,29 +275,6 @@ func (p *Pager) decorateLine(lineNumberToShow *linenumbers.LineNumber, contents 
 		}
 
 		newLine = append(newLine, contents[startColumn:endColumn]...)
-	}
-
-	// Add scroll left indicator
-	if p.leftColumnZeroBased > 0 && len(contents) > 0 {
-		if len(newLine) == 0 {
-			// Don't panic on short lines, this new Cell will be
-			// overwritten with '<' right after this if statement
-			newLine = append(newLine, twin.Cell{})
-		}
-
-		// Add can-scroll-left marker
-		newLine[0] = p.ScrollLeftHint
-
-		// We're scrolled right, meaning everything is not visible on screen
-		overflow = didOverflow
-	}
-
-	// Add scroll right indicator
-	if len(contents)+numberPrefixLength-p.leftColumnZeroBased > width {
-		newLine[width-1] = p.ScrollRightHint
-
-		// Some text is out of bounds to the right
-		overflow = didOverflow
 	}
 
 	return newLine, overflow

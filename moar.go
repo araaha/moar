@@ -557,12 +557,6 @@ func pagerFromArgs(
 		"Status bar `style`: inverse, plain or bold", parseStatusBarStyle)
 	unprintableStyle := flagSetFunc(flagSet, "render-unprintable", textstyles.UnprintableStyleHighlight,
 		"How unprintable characters are rendered: highlight or whitespace", parseUnprintableStyle)
-	scrollLeftHint := flagSetFunc(flagSet, "scroll-left-hint",
-		twin.NewCell('<', twin.StyleDefault.WithAttr(twin.AttrReverse)),
-		"Shown when view can scroll left. One character with optional ANSI highlighting.", parseScrollHint)
-	scrollRightHint := flagSetFunc(flagSet, "scroll-right-hint",
-		twin.NewCell('>', twin.StyleDefault.WithAttr(twin.AttrReverse)),
-		"Shown when view can scroll right. One character with optional ANSI highlighting.", parseScrollHint)
 	shift := flagSetFunc(flagSet, "shift", 16, "Horizontal scroll `amount` >=1, defaults to 16", parseShiftAmount)
 	mouseMode := flagSetFunc(
 		flagSet,
@@ -755,8 +749,6 @@ func pagerFromArgs(
 	pager.QuitIfOneScreen = *quitIfOneScreen
 	pager.StatusBarStyle = *statusBarStyle
 	pager.UnprintableStyle = *unprintableStyle
-	pager.ScrollLeftHint = *scrollLeftHint
-	pager.ScrollRightHint = *scrollRightHint
 	pager.SideScrollAmount = int(*shift)
 
 	pager.TargetLineNumber = targetLineNumber
